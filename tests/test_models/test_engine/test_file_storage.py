@@ -29,6 +29,8 @@ class TestFileStorageDocs(unittest.TestCase):
     def setUpClass(cls):
         """Set up for the doc tests"""
         cls.fs_f = inspect.getmembers(FileStorage, inspect.isfunction)
+        cls.storage = FileStorage()
+        cls.storage.reload()
 
     def test_pep8_conformance_file_storage(self):
         """Test that models/engine/file_storage.py conforms to PEP8."""
@@ -136,3 +138,16 @@ class TestFileStorage(unittest.TestCase):
         state2.save()
         city1.save()
         city2.save()
+
+        state_count = self.storage.count(State)
+        self.assertEqual(state_count, 2)
+
+        city_count = self.storage.count(City)
+        self.assertEqual(city_count, 2)
+
+        all_objects_count = self.storage.count()
+        self.assertEqual(all_objects_count, 4)
+
+
+if __name__ == '__main__':
+    unittest.main()
