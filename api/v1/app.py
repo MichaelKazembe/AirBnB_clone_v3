@@ -14,7 +14,7 @@ app.register_blueprint(app_views)
 
 
 @app.teardown_appcontext
-def close(error):
+def close(self):
     """ Tears down storage session """
     storage.close()
 
