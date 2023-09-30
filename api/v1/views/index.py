@@ -17,7 +17,10 @@ from models.place import Place
 @app_views.route('/status', methods=['GET'])
 def status():
     """ Returns JSON status response """
-    return jsonify({"status": "OK"})
+    response = jsonify({"status": "OK"})
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
 
 @app_views.route('/stats', methods=['GET'])
 def get_stats():
@@ -30,4 +33,6 @@ def get_stats():
         "states": storage.count("State"),
         "users": storage.count("User")
     }
-    return jsonify(stats)
+    response = jsonify(stats)
+    response.headers['Content-Type'] = 'application/json'
+    return response
