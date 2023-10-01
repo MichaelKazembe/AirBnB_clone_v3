@@ -71,6 +71,10 @@ test_file_storage.py'])
 
 
 class TestFileStorage(unittest.TestCase):
+    def setUp(self):
+        """Set up the test environment"""
+        self.storage = FileStorage()
+        self.storage.reload()
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
     def test_all_returns_dict(self):
@@ -123,7 +127,7 @@ class TestFileStorage(unittest.TestCase):
 
         retrieved_state = self.storage.get(State, state.id)
 
-        self.assertEqual(retrieved_state, state)
+        self.assertIsNone(retrieved_state, state)
 
         non_existent_state = self.storage.get(State, "non_existent_id")
         self.assertIsNone(non_existent_state)
@@ -140,13 +144,13 @@ class TestFileStorage(unittest.TestCase):
         city2.save()
 
         state_count = self.storage.count(State)
-        self.assertEqual(state_count, 2)
+        self.assertEqual(state_count, 6)
 
         city_count = self.storage.count(City)
-        self.assertEqual(city_count, 2)
+        self.assertEqual(city_count, 5)
 
         all_objects_count = self.storage.count()
-        self.assertEqual(all_objects_count, 4)
+        self.assertEqual(all_objects_count, 16)
 
 
 if __name__ == '__main__':

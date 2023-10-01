@@ -39,6 +39,9 @@ class DBStorage:
                                              HBNB_MYSQL_DB))
         if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
+        Session = scoped_session(sessionmaker(bind=self.__engine,
+                                              expire_on_commit=False))
+        self.__session = Session()
 
     def all(self, cls=None):
         """query on the current database session"""
@@ -77,9 +80,7 @@ class DBStorage:
 
     def get(self, cls, id):
         """Retrieve one object by class and ID"""
-        if cls and id:
-            return self.__session.query(cls).filter_by(id=id).first()
-        return None
+        return self.__session.query(cls).filter_by(id=id).first()
 
     def count(self, cls=None):
         """Count number of objects in storage"""
