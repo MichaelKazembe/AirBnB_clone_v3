@@ -3,7 +3,7 @@
 Defines the routes and views for Amenity objects
 """
 
-from flask import Flask, jsonify, request, abort
+from flask import Flask, make_response, jsonify, request, abort
 from api.v1.views import app_views
 from models import storage
 from models.amenity import Amenity
