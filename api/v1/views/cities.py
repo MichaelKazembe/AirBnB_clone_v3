@@ -70,7 +70,7 @@ def update_city(city_id):
     if not data:
         return jsonify({"error": "Not a JSON"}), 400
 
-    keys_to ignore = ["id", "state_id", "created_at", "updated_at"]
+    keys_to_ignore = ["id", "state_id", "created_at", "updated_at"]
     for key, value in data.items():
         if key not in keys_to_ignore:
             setattr(city, key, value)
