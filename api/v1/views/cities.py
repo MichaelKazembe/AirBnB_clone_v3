@@ -32,7 +32,7 @@ def get_city(city_id):
 @app_views.route('/cities/<city_id>', methods=['DELETE'])
 def delete_city(city_id):
     """Deletes a City object"""
-    city = storage.get(City, city_id)
+    city = storage.get("City", city_id)
     if city is None:
         abort(404)
     storage.delete(city)
@@ -43,7 +43,7 @@ def delete_city(city_id):
 @app_views.route('/states/<state_id>/cities', methods=['POST'])
 def create_city(state_id):
     """Creates a City"""
-    state = storage.get(State, state_id)
+    state = storage.get("State", state_id)
     if state is None:
         abort(404)
 
@@ -62,7 +62,7 @@ def create_city(state_id):
 @app_views.route('/cities/<city_id>', methods=['PUT'])
 def update_city(city_id):
     """Updates a City object"""
-    city = storage.get(City, city_id)
+    city = storage.get("City", city_id)
     if city is None:
         abort(404)
 
@@ -70,10 +70,11 @@ def update_city(city_id):
     if not data:
         return jsonify({"error": "Not a JSON"}), 400
 
-    keys_to_ignore = ["id", "state_id", "created_at", "updated_at"]
+    keys_ignore = ["id", "state_id", "created_at", "updated_at"]
+    for key in keys_ignore:
+        data.pop(key, None)
     for key, value in data.items():
-        if key not in keys_to_ignore:
-            setattr(city, key, value)
+        setattr(city, key, value)
 
     city.save()
     return jsonify(city.to_dict()), 200
