@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Defines the routes and views for Review objects
+    Defines the routes and views for Review objects
 """
 
 from flask import Flask, jsonify, request, abort
@@ -11,7 +11,8 @@ from models.review import Review
 from models.user import User
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['GET'])
+@app_views.route('/places/<place_id>/reviews', methods=['GET'],
+                 strict_slashes=False)
 def get_reviews(place_id):
     """Retrieves the list of all Review objects of a Place"""
     place = storage.get(Place, place_id)
@@ -21,7 +22,8 @@ def get_reviews(place_id):
     return jsonify(reviews)
 
 
-@app_views.route('/reviews/<review_id>', methods=['GET'])
+@app_views.route('/reviews/<review_id>', methods=['GET'],
+                 strict_slashes=False)
 def get_review(review_id):
     """Retrieves a Review object"""
     review = storage.get(Review, review_id)
@@ -30,7 +32,8 @@ def get_review(review_id):
     return jsonify(review.to_dict())
 
 
-@app_views.route('/reviews/<review_id>', methods=['DELETE'])
+@app_views.route('/reviews/<review_id>', methods=['DELETE'],
+                 strict_slashes=False)
 def delete_review(review_id):
     """Deletes a Review object"""
     review = storage.get(Review, review_id)
@@ -41,7 +44,8 @@ def delete_review(review_id):
     return jsonify({}), 200
 
 
-@app_views.route('/places/<place_id>/reviews', methods=['POST'])
+@app_views.route('/places/<place_id>/reviews', methods=['POST'],
+                 strict_slashes=False)
 def create_review(place_id):
     """Creates a Review"""
     place = storage.get(Place, place_id)
@@ -68,7 +72,8 @@ def create_review(place_id):
     return jsonify(review.to_dict()), 201
 
 
-@app_views.route('/reviews/<review_id>', methods=['PUT'])
+@app_views.route('/reviews/<review_id>', methods=['PUT'],
+                 strict_slashes=False)
 def update_review(review_id):
     """Updates a Review object"""
     review = storage.get(Review, review_id)
@@ -80,12 +85,9 @@ def update_review(review_id):
         return jsonify({"error": "Not a JSON"}), 400
 
     keys_to_ignore = ['id', 'user_id', 'place_id', 'created_at', 'updated_at']
-
-    for key in keys_to_ignore:
-        data.pop(key, None)
-
     for key, value in data.items():
-        setattr(review, key, value)
+        if key not in keys_to_ignore:
+            setattr(review, key, value)
 
     review.save()
     return jsonify(review.to_dict()), 200
