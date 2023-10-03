@@ -8,19 +8,20 @@ from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 import hashlib
 
+
 class User(BaseModel, Base):
     """Representation of a user """
     if models.storage_t == 'db':
         __tablename__ = 'users'
         email = Column(String(128), nullable=False)
-        password = Column(String(128), nullable=False)
+        __password = Column(String(128), nullable=False)
         first_name = Column(String(128), nullable=True)
         last_name = Column(String(128), nullable=True)
         places = relationship("Place", backref="user")
         reviews = relationship("Review", backref="user")
     else:
         email = ""
-        password = ""
+        __password = ""
         first_name = ""
         last_name = ""
 
@@ -39,16 +40,17 @@ class User(BaseModel, Base):
         if value:
             self.__password = hashlib.md5(value.encode()).hexdigest()
 
-    def to_dict(self, hide_password=True):
+    def to_dict(self):
         """returns a dictionary containing all keys/values of the instance"""
+        time_format = "%Y-%m-%dT%H:%M:%S.%f"
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
-            new_dict["created_at"] = new_dict["created_at"].strftime(time)
+            new_dict["created_at"] = new_dict["created_at"]\
+                    .strftime(time_format)
         if "updated_at" in new_dict:
-            new_dict["updated_at"] = new_dict["updated_at"].strftime(time)
+            new_dict["updated_at"] = new_dict["updated_at"]\
+                    .strftime(time_format)
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
-        if hide_password and "password" in new_dict:
-            del new_dict["password"]
         return new_dict
